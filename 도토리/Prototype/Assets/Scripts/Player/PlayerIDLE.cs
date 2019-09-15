@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerJUMP : PlayerFSMManager
+public class PlayerIDLE : PlayerFSMController
 {
     // Update is called once per frame
     void Update()
     {
+        
     }
 }

@@ -301,7 +301,6 @@ GameObject:
   - component: {fileID: 2098263882}
   - component: {fileID: 2098263879}
   - component: {fileID: 2098263878}
-  - component: {fileID: 2098263881}
   - component: {fileID: 2098263877}
   - component: {fileID: 2098263876}
   - component: {fileID: 2098263875}
@@ -323,8 +322,8 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 0.16
-  m_Radius: 0.08
+  m_Height: 0.23
+  m_Radius: 0.11
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
@@ -338,7 +337,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2098263871}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.54, z: 0}
+  m_LocalPosition: {x: 0, y: -1.61, z: 0}
   m_LocalScale: {x: 5, y: 5, z: 1}
   m_Children:
   - {fileID: 2128704600}
@@ -422,27 +421,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f4e8d61235602241afce120833adb3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isKeyInput: 0
   verticalVelocity: 0
   walkSpeed: 0
-  dashDistance: 0
+  dashSpeed: 0
   jumpForce: 0
   lastMoveDir: {x: 0, y: 0, z: 0}
   cc: {fileID: 0}
+  anim: {fileID: 0}
   startState: 0
-  currentState: 0
---- !u!114 &2098263881
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2098263871}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0553b3e956484f4eb9991ff665b5c0f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  controller: {fileID: 0}
+  curState: 0
 --- !u!114 &2098263882
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -466,8 +454,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2128704600}
   - component: {fileID: 2128704601}
+  - component: {fileID: 2128704602}
   m_Layer: 0
-  m_Name: KakaoTalk_20190909_222143962
+  m_Name: chipmunk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -481,7 +470,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2128704599}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.196, y: 0.298, z: 0}
   m_LocalScale: {x: 0.2, y: 0.2, z: 1}
   m_Children: []
   m_Father: {fileID: 2098263874}
@@ -524,14 +513,33 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 0dd1d4091053aa84b9f469fcccf9f970, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2e6e40764c63c044daf225c5f1e3ec79, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.64, y: 0.64}
+  m_Size: {x: 2, y: 2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &2128704602
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2128704599}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 505b23e32f9e24d478b06073cf79d1b3, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

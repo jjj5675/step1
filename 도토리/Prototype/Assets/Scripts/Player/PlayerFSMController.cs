@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerFSMManager : MonoBehaviour
+public class PlayerFSMController : MonoBehaviour
 {
     public PlayerController controller;
 

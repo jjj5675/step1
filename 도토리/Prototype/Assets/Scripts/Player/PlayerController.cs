@@ -5,8 +5,7 @@ using UnityEngine;
 public enum PlayerState
 {
     IDLE=0,
-    LEFT_WALK,
-    RIGHT_WALK,
+    WALK,
     JUMP,
     DOWN,
     DASH
@@ -15,36 +14,37 @@ public enum PlayerState
 
 public class PlayerController : MonoBehaviour
 {
+    public bool isKeyInput = false;
     private float gravity;
     public float verticalVelocity;
     public float walkSpeed;
-    public float dashDistance;
+    public float dashSpeed;
     public float jumpForce;
 
     private Vector2 moveDirection;
-    public Vector3 lastMoveDir;
+    public Vector3 lastMoveDir = Vector3.zero;
     private BoxCollider ground;
     public CharacterController cc;
+    public Animator anim;
 
     public PlayerState startState;
-    public PlayerState currentState;
+    public PlayerState curState;
 
-    Dictionary<PlayerState, PlayerFSMManager> states =
-        new Dictionary<PlayerState, PlayerFSMManager>();
+    public Dictionary<PlayerState, PlayerFSMController> states =
+        new Dictionary<PlayerState, PlayerFSMController>();
 
 
     private void Awake()
     {
-        jumpForce=10f;
+        jumpForce =10f;
         walkSpeed = 3f;
-        dashDistance = 4f;
+        dashSpeed = 3f;
         gravity = 10f;
-        lastMoveDir = Vector3.right;
         cc = GetComponent<CharacterController>();
+        anim = GetComponentInChildren<Animator>();
         ground = GameObject.FindGameObjectWithTag("Ground").GetComponent<BoxCollider>();
         states.Add(PlayerState.IDLE, GetComponent<PlayerIDLE>());
-        states.Add(PlayerState.LEFT_WALK, GetComponent<PlayerLeftWalk>());
-        states.Add(PlayerState.RIGHT_WALK, GetComponent<PlayerRightWalk>());
+        states.Add(PlayerState.WALK, GetComponent<PlayerWALK>());
         states.Add(PlayerState.JUMP, GetComponent<PlayerJUMP>());
         states.Add(PlayerState.DOWN, GetComponent<PlayerDOWN>());
         states.Add(PlayerState.DASH, GetComponent<PlayerDASH>());
@@ -59,16 +59,15 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A))
-            SetState(PlayerState.LEFT_WALK);
-        else if (Input.GetKeyDown(KeyCode.D))
-            SetState(PlayerState.RIGHT_WALK);
-
-        if (Input.GetKeyDown(KeyCode.S))
+        if (Input.GetKey(KeyCode.A) || (Input.GetKey(KeyCode.D)))
+            SetState(PlayerState.WALK);
+        if (Input.GetKey(KeyCode.S))
             SetState(PlayerState.DOWN);
-
         if (Input.GetKeyDown(KeyCode.LeftShift))
             SetState(PlayerState.DASH);
+
+        if (!isKeyInput)
+            SetState(PlayerState.IDLE);
 
         Gravity();
     }
@@ -76,13 +75,27 @@ public class PlayerController : MonoBehaviour
 
     public void SetState(PlayerState newState)
     {
-        foreach(PlayerFSMManager fsm in states.Values)
+        if (newState != PlayerState.IDLE)
         {
-            fsm.enabled = false;
+            isKeyInput = true;
+            states[PlayerState.IDLE].enabled = false;
         }
 
-        currentState = newState;
-        states[currentState].enabled = true;
+        if (!isKeyInput)
+        {
+            foreach (PlayerFSMController fsm in states.Values)
+            {
+                fsm.enabled = false;
+            }
+        }
+
+        curState = newState;
+        states[curState].enabled = true;
+
+        if (states[PlayerState.JUMP].enabled)
+            anim.SetInteger("curState", (int)PlayerState.JUMP);
+        else
+            anim.SetInteger("curState", (int)curState);
     }
 
     public void Gravity()
@@ -110,7 +123,8 @@ public class PlayerController : MonoBehaviour
         if ((hit.gameObject.tag == "Ground") &&
             (verticalVelocity <= -gravity))
         {
-            SetState(PlayerState.IDLE);
+            isKeyInput = false;
+            states[PlayerState.JUMP].enabled = false;
         }
     }
 }
