@@ -44,7 +44,7 @@ public class PlayerController : MonoBehaviour
     {
         jumpForce =10f;
         walkSpeed = 3f;
-        dashSpeed = 3f;
+        dashSpeed = 1.5f;
         gravity = 10f;
         cc = GetComponent<CharacterController>();
         anim = GetComponentInChildren<Animator>();
