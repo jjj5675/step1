@@ -8,24 +8,30 @@ public enum PlayerState
     WALK,
     JUMP,
     DOWN,
-    DASH
+    DASH,
+    ATTACK
 }
 
 
 public class PlayerController : MonoBehaviour
 {
-    public bool isKeyInput = false;
+    private bool isKeyInput = false;
     private float gravity;
     public float verticalVelocity;
     public float walkSpeed;
     public float dashSpeed;
     public float jumpForce;
 
-    private Vector2 moveDirection;
+    [HideInInspector]
+    public Vector3 mousePos;
+    [HideInInspector]
     public Vector3 lastMoveDir = Vector3.zero;
-    private BoxCollider ground;
+    [HideInInspector]
+    public Vector3 dashDir = Vector3.zero;
+    private Vector2 moveDirection;
     public CharacterController cc;
     public Animator anim;
+    public SpriteRenderer sprite;
 
     public PlayerState startState;
     public PlayerState curState;
@@ -42,12 +48,13 @@ public class PlayerController : MonoBehaviour
         gravity = 10f;
         cc = GetComponent<CharacterController>();
         anim = GetComponentInChildren<Animator>();
-        ground = GameObject.FindGameObjectWithTag("Ground").GetComponent<BoxCollider>();
+        sprite = GetComponentInChildren<SpriteRenderer>();
         states.Add(PlayerState.IDLE, GetComponent<PlayerIDLE>());
         states.Add(PlayerState.WALK, GetComponent<PlayerWALK>());
         states.Add(PlayerState.JUMP, GetComponent<PlayerJUMP>());
         states.Add(PlayerState.DOWN, GetComponent<PlayerDOWN>());
         states.Add(PlayerState.DASH, GetComponent<PlayerDASH>());
+        states.Add(PlayerState.ATTACK, GetComponent<PlayerATTACK>());
     }
 
     // Start is called before the first frame update
@@ -65,11 +72,39 @@ public class PlayerController : MonoBehaviour
             SetState(PlayerState.DOWN);
         if (Input.GetKeyDown(KeyCode.LeftShift))
             SetState(PlayerState.DASH);
+        if (Input.GetMouseButtonDown(0))
+            SetState(PlayerState.ATTACK);
+
+
+        for(int i=1; i<states.Count;)
+        {
+            if (states[(PlayerState)i].enabled == false)
+            {
+                i++;
+            }
+            else
+                break;
+
+            if (i == states.Count)
+                isKeyInput = false;
+        }
 
         if (!isKeyInput)
             SetState(PlayerState.IDLE);
 
         Gravity();
+
+        mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        if (transform.position.x > mousePos.x)
+        {
+            sprite.flipX = true;
+            dashDir = Vector3.left;
+        }
+        else
+        {
+            sprite.flipX = false;
+            dashDir = Vector3.right;
+        }
     }
 
 
@@ -123,7 +158,6 @@ public class PlayerController : MonoBehaviour
         if ((hit.gameObject.tag == "Ground") &&
             (verticalVelocity <= -gravity))
         {
-            isKeyInput = false;
             states[PlayerState.JUMP].enabled = false;
         }
     }
